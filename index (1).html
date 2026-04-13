@@ -1,0 +1,2154 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hahahaaaaam - Tonton & Upload Film</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #E50914;
+    --red-dark: #B81D24;
+    --gold: #F5A623;
+    --bg: #0A0A0A;
+    --bg2: #141414;
+    --bg3: #1A1A1A;
+    --card: #1E1E1E;
+    --border: #2A2A2A;
+    --text: #FFFFFF;
+    --muted: #8A8A8A;
+    --light: #CCCCCC;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg2); }
+  ::-webkit-scrollbar-thumb { background: var(--red); border-radius: 3px; }
+
+  /* NAVBAR */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 1000;
+    padding: 0 4%;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.95), transparent);
+    transition: background 0.3s;
+  }
+  nav.scrolled { background: rgba(10,10,10,0.98); border-bottom: 1px solid var(--border); }
+
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.2rem;
+    color: var(--red);
+    letter-spacing: 2px;
+    cursor: pointer;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 28px;
+    list-style: none;
+  }
+  .nav-links a {
+    color: var(--light);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--text); }
+
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .btn-upload-nav {
+    background: var(--red);
+    color: white;
+    border: none;
+    padding: 9px 20px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .btn-upload-nav:hover { background: var(--red-dark); transform: scale(1.03); }
+
+  .avatar {
+    width: 38px; height: 38px;
+    border-radius: 6px;
+    background: linear-gradient(135deg, var(--red), var(--gold));
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 0.9rem;
+    cursor: pointer;
+  }
+
+  /* HERO */
+  .hero {
+    height: 92vh;
+    min-height: 580px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    padding: 0 4% 6%;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #1a0000 0%, #0d0d0d 50%, #000d1a 100%);
+    z-index: 0;
+  }
+
+  .hero-noise {
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    background-size: 200px;
+    z-index: 1;
+    opacity: 0.5;
+  }
+
+  .hero-gradient {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(10,10,10,1) 0%, rgba(10,10,10,0.4) 40%, transparent 70%);
+    z-index: 2;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 3;
+    max-width: 600px;
+    animation: heroIn 1s ease both;
+  }
+
+  @keyframes heroIn {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: rgba(229,9,20,0.2);
+    border: 1px solid rgba(229,9,20,0.4);
+    color: #ff6b6b;
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+
+  .hero-badge-dot {
+    width: 7px; height: 7px;
+    background: var(--red);
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3.5rem, 7vw, 6rem);
+    line-height: 0.95;
+    letter-spacing: 1px;
+    margin-bottom: 18px;
+    text-shadow: 0 4px 30px rgba(0,0,0,0.8);
+  }
+
+  .hero h1 span { color: var(--red); }
+
+  .hero-desc {
+    font-size: 1rem;
+    color: var(--light);
+    line-height: 1.6;
+    margin-bottom: 28px;
+    max-width: 480px;
+  }
+
+  .hero-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+
+  .rating-badge {
+    background: var(--gold);
+    color: #000;
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 700;
+  }
+
+  .hero-meta-text { color: var(--muted); font-size: 0.85rem; }
+  .hero-meta-dot { color: var(--border); }
+
+  .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+  .btn-play {
+    background: var(--red);
+    color: white;
+    border: none;
+    padding: 14px 32px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 700;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .btn-play:hover { background: var(--red-dark); transform: scale(1.03); }
+
+  .btn-info {
+    background: rgba(255,255,255,0.12);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 14px 28px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    backdrop-filter: blur(8px);
+    transition: background 0.2s;
+  }
+  .btn-info:hover { background: rgba(255,255,255,0.2); }
+
+  /* SECTIONS */
+  .content { padding: 0 4%; }
+
+  .section { margin-bottom: 50px; }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    letter-spacing: 1.5px;
+    color: var(--text);
+  }
+
+  .section-title span {
+    color: var(--red);
+    font-size: 0.9rem;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  .see-all {
+    color: var(--muted);
+    font-size: 0.82rem;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color 0.2s;
+  }
+  .see-all:hover { color: var(--text); }
+
+  /* CAROUSEL */
+  .carousel-wrapper { position: relative; }
+
+  .carousel {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding-bottom: 12px;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .carousel::-webkit-scrollbar { display: none; }
+
+  .carousel-btn {
+    position: absolute;
+    top: 50%; transform: translateY(-50%);
+    width: 44px; height: 80px;
+    background: rgba(10,10,10,0.85);
+    border: 1px solid var(--border);
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    z-index: 10;
+    font-size: 1.2rem;
+    transition: background 0.2s, opacity 0.2s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .carousel-btn:hover { background: rgba(229,9,20,0.7); }
+  .carousel-btn.left { left: -22px; }
+  .carousel-btn.right { right: -22px; }
+
+  /* FILM CARD */
+  .film-card {
+    flex: 0 0 200px;
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--card);
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+    position: relative;
+  }
+  .film-card:hover {
+    transform: scale(1.06) translateY(-4px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.8), 0 0 0 1px rgba(229,9,20,0.3);
+    z-index: 10;
+  }
+
+  .card-thumb {
+    width: 100%;
+    height: 280px;
+    object-fit: cover;
+    display: block;
+  }
+
+  .card-thumb-placeholder {
+    width: 100%;
+    height: 280px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    gap: 8px;
+    color: var(--muted);
+  }
+
+  .card-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.3) 50%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 16px;
+  }
+  .film-card:hover .card-overlay { opacity: 1; }
+
+  .card-play-btn {
+    width: 40px; height: 40px;
+    background: var(--red);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 10px;
+    font-size: 1rem;
+  }
+
+  .card-title { font-weight: 700; font-size: 0.9rem; margin-bottom: 4px; }
+  .card-meta { font-size: 0.75rem; color: var(--muted); }
+
+  .card-info {
+    padding: 12px;
+  }
+  .card-info-title {
+    font-weight: 600;
+    font-size: 0.88rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 4px;
+  }
+  .card-info-genre {
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+
+  .card-badge-new {
+    position: absolute;
+    top: 10px; left: 10px;
+    background: var(--red);
+    color: white;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+  }
+
+  .card-badge-uploaded {
+    position: absolute;
+    top: 10px; right: 10px;
+    background: rgba(245,166,35,0.9);
+    color: #000;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 4px;
+  }
+
+  /* PROGRESS BAR */
+  .card-progress {
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    margin-top: 8px;
+  }
+  .card-progress-fill {
+    height: 100%;
+    background: var(--red);
+    border-radius: 2px;
+  }
+
+  /* GENRE TAGS */
+  .genre-tags {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 28px;
+  }
+  .genre-tag {
+    padding: 7px 18px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .genre-tag:hover, .genre-tag.active {
+    background: var(--red);
+    border-color: var(--red);
+    color: white;
+  }
+
+  /* UPLOAD MODAL */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(8px);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+  .modal-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .upload-modal {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    width: 100%;
+    max-width: 680px;
+    max-height: 90vh;
+    overflow-y: auto;
+    transform: scale(0.92) translateY(20px);
+    transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+    scrollbar-width: thin;
+  }
+  .modal-overlay.active .upload-modal {
+    transform: scale(1) translateY(0);
+  }
+
+  .modal-header {
+    padding: 28px 28px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    background: var(--bg2);
+    z-index: 1;
+  }
+
+  .modal-header h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    letter-spacing: 1px;
+  }
+  .modal-header h2 span { color: var(--red); }
+
+  .modal-close {
+    width: 36px; height: 36px;
+    background: var(--border);
+    border: none;
+    border-radius: 50%;
+    color: var(--text);
+    cursor: pointer;
+    font-size: 1.1rem;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s;
+  }
+  .modal-close:hover { background: var(--red); }
+
+  .modal-body { padding: 28px; }
+
+  /* UPLOAD STEPS */
+  .upload-steps {
+    display: flex;
+    gap: 0;
+    margin-bottom: 32px;
+  }
+
+  .step {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    position: relative;
+  }
+
+  .step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 16px;
+    left: 60%;
+    right: -40%;
+    height: 2px;
+    background: var(--border);
+    z-index: 0;
+  }
+
+  .step.done:not(:last-child)::after { background: var(--red); }
+
+  .step-circle {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+    background: var(--bg2);
+    position: relative;
+    z-index: 1;
+    transition: all 0.3s;
+  }
+
+  .step.active .step-circle {
+    border-color: var(--red);
+    color: var(--red);
+    box-shadow: 0 0 0 4px rgba(229,9,20,0.15);
+  }
+
+  .step.done .step-circle {
+    background: var(--red);
+    border-color: var(--red);
+    color: white;
+  }
+
+  .step-label {
+    font-size: 0.72rem;
+    color: var(--muted);
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .step.active .step-label { color: var(--red); }
+  .step.done .step-label { color: var(--text); }
+
+  /* FORM ELEMENTS */
+  .form-group { margin-bottom: 20px; }
+
+  .form-label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--light);
+  }
+
+  .form-label span { color: var(--red); }
+
+  .form-input, .form-select, .form-textarea {
+    width: 100%;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    padding: 12px 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+  }
+
+  .form-input:focus, .form-select:focus, .form-textarea:focus {
+    border-color: var(--red);
+    box-shadow: 0 0 0 3px rgba(229,9,20,0.12);
+  }
+
+  .form-select option { background: var(--bg3); }
+
+  .form-textarea { resize: vertical; min-height: 90px; line-height: 1.6; }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  /* DROP ZONE */
+  .drop-zone {
+    border: 2px dashed var(--border);
+    border-radius: 12px;
+    padding: 36px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .drop-zone:hover, .drop-zone.drag-over {
+    border-color: var(--red);
+    background: rgba(229,9,20,0.05);
+  }
+
+  .drop-zone input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+  }
+
+  .drop-icon {
+    width: 56px; height: 56px;
+    background: rgba(229,9,20,0.12);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 14px;
+    font-size: 1.5rem;
+    color: var(--red);
+  }
+
+  .drop-title {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .drop-sub { font-size: 0.82rem; color: var(--muted); margin-bottom: 12px; }
+
+  .drop-formats {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .format-tag {
+    padding: 3px 10px;
+    background: var(--border);
+    border-radius: 4px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--muted);
+  }
+
+  /* FILE PREVIEW */
+  .file-preview {
+    display: none;
+    align-items: center;
+    gap: 14px;
+    padding: 14px;
+    background: rgba(229,9,20,0.08);
+    border: 1px solid rgba(229,9,20,0.25);
+    border-radius: 10px;
+    margin-top: 12px;
+  }
+  .file-preview.show { display: flex; }
+
+  .file-icon {
+    width: 44px; height: 44px;
+    background: var(--red);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    color: white;
+    font-weight: 700;
+    font-size: 0.7rem;
+  }
+
+  .file-info { flex: 1; min-width: 0; }
+  .file-name { font-size: 0.88rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .file-size { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+
+  .file-remove {
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: color 0.2s;
+    flex-shrink: 0;
+  }
+  .file-remove:hover { color: var(--red); }
+
+  /* THUMBNAIL PREVIEW */
+  .thumb-preview {
+    width: 100%;
+    height: 160px;
+    border-radius: 10px;
+    object-fit: cover;
+    margin-top: 12px;
+    display: none;
+    border: 1px solid var(--border);
+  }
+  .thumb-preview.show { display: block; }
+
+  /* PROGRESS */
+  .upload-progress {
+    display: none;
+    margin-top: 20px;
+  }
+  .upload-progress.show { display: block; }
+
+  .progress-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  .progress-bar-track {
+    height: 8px;
+    background: var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--red), #ff6b35);
+    border-radius: 4px;
+    width: 0%;
+    transition: width 0.3s;
+  }
+
+  .progress-status {
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-top: 6px;
+  }
+
+  /* SUCCESS */
+  .upload-success {
+    display: none;
+    text-align: center;
+    padding: 40px 20px;
+  }
+  .upload-success.show { display: block; }
+
+  .success-icon {
+    width: 80px; height: 80px;
+    background: linear-gradient(135deg, #00c853, #00e676);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 2rem;
+    animation: popIn 0.5s cubic-bezier(0.34,1.56,0.64,1);
+  }
+
+  @keyframes popIn {
+    from { transform: scale(0); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  .success-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+  }
+  .success-sub { color: var(--muted); font-size: 0.9rem; margin-bottom: 24px; }
+
+  /* MODAL FOOTER */
+  .modal-footer {
+    padding: 20px 28px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    position: sticky;
+    bottom: 0;
+    background: var(--bg2);
+  }
+
+  .btn-cancel {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    padding: 11px 24px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-cancel:hover { border-color: var(--muted); color: var(--text); }
+
+  .btn-next {
+    background: var(--red);
+    color: white;
+    border: none;
+    padding: 11px 32px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .btn-next:hover { background: var(--red-dark); transform: scale(1.02); }
+  .btn-next:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* CHAR COUNTER */
+  .char-counter {
+    text-align: right;
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  /* TAGS INPUT */
+  .tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 8px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    min-height: 48px;
+    align-items: center;
+    transition: border-color 0.2s;
+    cursor: text;
+  }
+  .tags-container:focus-within {
+    border-color: var(--red);
+    box-shadow: 0 0 0 3px rgba(229,9,20,0.12);
+  }
+
+  .tag-item {
+    background: rgba(229,9,20,0.15);
+    border: 1px solid rgba(229,9,20,0.3);
+    color: #ff8080;
+    padding: 3px 10px 3px 10px;
+    border-radius: 4px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .tag-remove {
+    background: none;
+    border: none;
+    color: currentColor;
+    cursor: pointer;
+    font-size: 0.9rem;
+    line-height: 1;
+    padding: 0;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+  }
+  .tag-remove:hover { opacity: 1; }
+
+  .tag-input {
+    background: none;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    flex: 1;
+    min-width: 80px;
+  }
+
+  /* TOAST */
+  .toast-container {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .toast {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--red);
+    padding: 14px 18px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.88rem;
+    font-weight: 500;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    animation: toastIn 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    max-width: 360px;
+  }
+
+  .toast.success { border-left-color: #00c853; }
+  .toast.info { border-left-color: #2196f3; }
+
+  @keyframes toastIn {
+    from { opacity: 0; transform: translateX(60px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  /* DETAIL MODAL */
+  .detail-modal {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    width: 100%;
+    max-width: 620px;
+    max-height: 85vh;
+    overflow-y: auto;
+    transform: scale(0.92);
+    transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+    scrollbar-width: thin;
+  }
+  .modal-overlay.active .detail-modal { transform: scale(1); }
+
+  .detail-banner {
+    height: 260px;
+    position: relative;
+    background: linear-gradient(135deg, #1a0000, #0d0d1a);
+    border-radius: 16px 16px 0 0;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .detail-banner-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.6;
+  }
+
+  .detail-banner-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, var(--bg2) 0%, transparent 50%);
+  }
+
+  .detail-banner-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 10px;
+    color: var(--muted);
+  }
+
+  .detail-content { padding: 24px; }
+
+  .detail-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+  .detail-tag {
+    padding: 4px 12px;
+    background: var(--border);
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--muted);
+  }
+
+  .detail-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.2rem;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+
+  .detail-meta {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+    font-size: 0.82rem;
+    color: var(--muted);
+    align-items: center;
+  }
+
+  .detail-rating {
+    background: var(--gold);
+    color: #000;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 0.78rem;
+  }
+
+  .detail-desc { line-height: 1.7; color: var(--light); font-size: 0.9rem; margin-bottom: 24px; }
+
+  .detail-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+  /* VIDEO PLAYER */
+  .video-player-wrap {
+    position: relative;
+    background: #000;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 20px;
+  }
+
+  .video-player-wrap video {
+    width: 100%;
+    display: block;
+    max-height: 240px;
+    object-fit: contain;
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 40px;
+  }
+
+  .stat-item {
+    background: var(--card);
+    padding: 20px;
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    color: var(--red);
+    letter-spacing: 1px;
+  }
+
+  .stat-label { font-size: 0.78rem; color: var(--muted); margin-top: 4px; }
+
+  /* EMPTY STATE */
+  .empty-state {
+    text-align: center;
+    padding: 50px 20px;
+    color: var(--muted);
+  }
+  .empty-icon {
+    width: 64px; height: 64px;
+    background: var(--card);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 16px;
+    font-size: 1.5rem;
+    color: var(--border);
+  }
+  .empty-state p { font-size: 0.88rem; }
+  .empty-state h3 { font-size: 1rem; font-weight: 600; margin-bottom: 8px; color: var(--text); }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 40px 4%;
+    margin-top: 60px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .footer-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    color: var(--red);
+    letter-spacing: 2px;
+  }
+
+  .footer-copy { color: var(--muted); font-size: 0.8rem; margin-top: 4px; }
+  .footer-links { display: flex; gap: 20px; }
+  .footer-links a { color: var(--muted); font-size: 0.82rem; text-decoration: none; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--text); }
+
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .hero h1 { font-size: 3rem; }
+    .form-row { grid-template-columns: 1fr; }
+    .stats-bar { grid-template-columns: 1fr; }
+    footer { grid-template-columns: 1fr; }
+  }
+
+  /* SECTION DIVIDER */
+  .divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--border), transparent);
+    margin: 40px 0;
+  }
+
+  /* RATE TAG */
+  .rate-stars { color: var(--gold); font-size: 0.8rem; letter-spacing: 1px; }
+
+  /* TOGGLE */
+  .section-step { display: none; }
+  .section-step.active { display: block; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <div class="logo">Hahahaaaaam</div>
+  <ul class="nav-links">
+    <li><a href="#">Beranda</a></li>
+    <li><a href="#">Film</a></li>
+    <li><a href="#">Serial</a></li>
+    <li><a href="#">Koleksi Saya</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="btn-upload-nav" onclick="openUpload()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
+      Upload Film
+    </button>
+    <div class="avatar">A</div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-noise"></div>
+  <div class="hero-gradient"></div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <div class="hero-badge-dot"></div>
+      Trending Sekarang
+    </div>
+    <h1>Dunia <span>Tanpa</span><br>Batas Layar</h1>
+    <p class="hero-desc">Nikmati ribuan film dan serial berkualitas tinggi. Tonton kapan saja, di mana saja — dan upload karya filmmu sendiri untuk dinikmati jutaan penonton. Jangan ngantuk!</p>
+    <div class="hero-meta">
+      <span class="rating-badge">18+</span>
+      <span class="hero-meta-text">2024</span>
+      <span class="hero-meta-dot">|</span>
+      <span class="hero-meta-text">2j 34m</span>
+      <span class="hero-meta-dot">|</span>
+      <span class="hero-meta-text">Aksi · Thriller</span>
+    </div>
+    <div class="hero-actions">
+      <button class="btn-play">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        Tonton Sekarang
+      </button>
+      <button class="btn-info" onclick="openUpload()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
+        Upload Filmmu
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- MAIN CONTENT -->
+<div class="content" style="padding-top: 20px;">
+
+  <!-- STATS -->
+  <div class="stats-bar" id="statsBar">
+    <div class="stat-item">
+      <div class="stat-num" id="statFilms">0</div>
+      <div class="stat-label">Total Film</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" id="statUploaded">0</div>
+      <div class="stat-label">Diupload</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" id="statGenres">0</div>
+      <div class="stat-label">Genre</div>
+    </div>
+  </div>
+
+  <!-- GENRE FILTER -->
+  <div class="genre-tags" id="genreTags">
+    <div class="genre-tag active" onclick="filterGenre(this, 'all')">Semua</div>
+    <div class="genre-tag" onclick="filterGenre(this, 'Aksi')">Aksi</div>
+    <div class="genre-tag" onclick="filterGenre(this, 'Drama')">Drama</div>
+    <div class="genre-tag" onclick="filterGenre(this, 'Komedi')">Komedi</div>
+    <div class="genre-tag" onclick="filterGenre(this, 'Horor')">Horor</div>
+    <div class="genre-tag" onclick="filterGenre(this, 'Animasi')">Animasi</div>
+    <div class="genre-tag" onclick="filterGenre(this, 'Dokumenter')">Dokumenter</div>
+    <div class="genre-tag" onclick="filterGenre(this, 'Romansa')">Romansa</div>
+    <div class="genre-tag" onclick="filterGenre(this, 'Sci-Fi')">Sci-Fi</div>
+  </div>
+
+  <!-- UPLOADED SECTION -->
+  <div class="section" id="uploadedSection" style="display:none;">
+    <div class="section-header">
+      <div class="section-title">Film Yang Diupload <span>BY YOU</span></div>
+      <span class="see-all" onclick="clearUploaded()">Hapus Semua</span>
+    </div>
+    <div class="carousel-wrapper">
+      <button class="carousel-btn left" onclick="scroll('uploadedRow', -1)">&#8249;</button>
+      <div class="carousel" id="uploadedRow"></div>
+      <button class="carousel-btn right" onclick="scroll('uploadedRow', 1)">&#8250;</button>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- TRENDING -->
+  <div class="section" id="trendingSection">
+    <div class="section-header">
+      <div class="section-title">Trending <span>HARI INI</span></div>
+      <span class="see-all">Lihat Semua</span>
+    </div>
+    <div class="carousel-wrapper">
+      <button class="carousel-btn left" onclick="scroll('trendingRow', -1)">&#8249;</button>
+      <div class="carousel" id="trendingRow"></div>
+      <button class="carousel-btn right" onclick="scroll('trendingRow', 1)">&#8250;</button>
+    </div>
+  </div>
+
+  <!-- CONTINUE -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title">Lanjut <span>NONTON</span></div>
+      <span class="see-all">Lihat Semua</span>
+    </div>
+    <div class="carousel-wrapper">
+      <button class="carousel-btn left" onclick="scroll('continueRow', -1)">&#8249;</button>
+      <div class="carousel" id="continueRow"></div>
+      <button class="carousel-btn right" onclick="scroll('continueRow', 1)">&#8250;</button>
+    </div>
+  </div>
+
+  <!-- POPULAR -->
+  <div class="section" id="popularSection">
+    <div class="section-header">
+      <div class="section-title">Populer <span>MINGGU INI</span></div>
+      <span class="see-all">Lihat Semua</span>
+    </div>
+    <div class="carousel-wrapper">
+      <button class="carousel-btn left" onclick="scroll('popularRow', -1)">&#8249;</button>
+      <div class="carousel" id="popularRow"></div>
+      <button class="carousel-btn right" onclick="scroll('popularRow', 1)">&#8250;</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-logo">Hahahaaaaam</div>
+    <div class="footer-copy">2026 Hahahaaaaam. Jangan Berisik!</div>
+  </div>
+  <div class="footer-links">
+    <a href="#">Syarat</a>
+    <a href="#">Privasi</a>
+    <a href="#">Bantuan</a>
+    <a href="#">Kontak</a>
+  </div>
+</footer>
+
+<!-- UPLOAD MODAL -->
+<div class="modal-overlay" id="uploadOverlay" onclick="closeOnOverlay(event, 'uploadOverlay')">
+  <div class="upload-modal">
+    <div class="modal-header">
+      <h2>Upload <span>Film</span></h2>
+      <button class="modal-close" onclick="closeUpload()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <!-- STEPS -->
+      <div class="upload-steps">
+        <div class="step active" id="stepDot1">
+          <div class="step-circle" id="stepCircle1">1</div>
+          <div class="step-label">Informasi</div>
+        </div>
+        <div class="step" id="stepDot2">
+          <div class="step-circle" id="stepCircle2">2</div>
+          <div class="step-label">File Film</div>
+        </div>
+        <div class="step" id="stepDot3">
+          <div class="step-circle" id="stepCircle3">3</div>
+          <div class="step-label">Thumbnail</div>
+        </div>
+        <div class="step" id="stepDot4">
+          <div class="step-circle" id="stepCircle4">4</div>
+          <div class="step-label">Selesai</div>
+        </div>
+      </div>
+
+      <!-- STEP 1: INFO -->
+      <div class="section-step active" id="formStep1">
+        <div class="form-group">
+          <label class="form-label">Judul Film <span>*</span></label>
+          <input type="text" class="form-input" id="filmTitle" placeholder="Masukkan judul film..." maxlength="100" oninput="countChar('filmTitle','titleCount',100)">
+          <div class="char-counter"><span id="titleCount">0</span>/100</div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Genre <span>*</span></label>
+            <select class="form-select" id="filmGenre">
+              <option value="">-- Pilih Genre --</option>
+              <option>Aksi</option>
+              <option>Drama</option>
+              <option>Komedi</option>
+              <option>Horor</option>
+              <option>Animasi</option>
+              <option>Dokumenter</option>
+              <option>Romansa</option>
+              <option>Sci-Fi</option>
+              <option>Thriller</option>
+              <option>Fantasi</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Rating Usia</label>
+            <select class="form-select" id="filmRating">
+              <option>Semua Usia</option>
+              <option>13+</option>
+              <option>18+</option>
+              <option>21+</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Tahun Rilis <span>*</span></label>
+            <input type="number" class="form-input" id="filmYear" placeholder="2024" min="1900" max="2099" value="2024">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Durasi (menit)</label>
+            <input type="number" class="form-input" id="filmDuration" placeholder="120" min="1">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Sutradara</label>
+          <input type="text" class="form-input" id="filmDirector" placeholder="Nama sutradara...">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Deskripsi Singkat <span>*</span></label>
+          <textarea class="form-textarea" id="filmDesc" placeholder="Ceritakan sinopsis filmmu..." maxlength="500" oninput="countChar('filmDesc','descCount',500)"></textarea>
+          <div class="char-counter"><span id="descCount">0</span>/500</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Tag / Kata Kunci</label>
+          <div class="tags-container" id="tagsContainer" onclick="document.getElementById('tagInput').focus()">
+            <input type="text" class="tag-input" id="tagInput" placeholder="Ketik tag lalu tekan Enter..." onkeydown="handleTag(event)">
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2: FILE -->
+      <div class="section-step" id="formStep2">
+        <div class="form-group">
+          <label class="form-label">File Video Film <span>*</span></label>
+          <div class="drop-zone" id="videoDropZone">
+            <input type="file" accept="video/*" id="videoFile" onchange="handleVideoFile(event)" ondragover="handleDrag(event,'videoDropZone')" ondragleave="handleDragLeave('videoDropZone')">
+            <div class="drop-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+            </div>
+            <div class="drop-title">Drag & Drop atau Klik untuk Pilih</div>
+            <div class="drop-sub">Unggah file video filmmu ke sini</div>
+            <div class="drop-formats">
+              <span class="format-tag">MP4</span>
+              <span class="format-tag">MKV</span>
+              <span class="format-tag">AVI</span>
+              <span class="format-tag">MOV</span>
+              <span class="format-tag">WEBM</span>
+            </div>
+          </div>
+          <div class="file-preview" id="videoPreview">
+            <div class="file-icon">VID</div>
+            <div class="file-info">
+              <div class="file-name" id="videoFileName">video.mp4</div>
+              <div class="file-size" id="videoFileSize">0 MB</div>
+            </div>
+            <button class="file-remove" onclick="removeFile('videoFile','videoPreview','videoDropZone')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Kualitas Video</label>
+          <select class="form-select" id="filmQuality">
+            <option>4K Ultra HD</option>
+            <option>1080p Full HD</option>
+            <option selected>720p HD</option>
+            <option>480p SD</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Bahasa Audio</label>
+          <select class="form-select" id="filmLang">
+            <option>Indonesia</option>
+            <option>Inggris</option>
+            <option>Jepang</option>
+            <option>Korea</option>
+            <option>Mandarin</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Subtitle Tersedia</label>
+          <select class="form-select" id="filmSub">
+            <option>Indonesia</option>
+            <option>Inggris</option>
+            <option>Tidak Ada</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- STEP 3: THUMBNAIL -->
+      <div class="section-step" id="formStep3">
+        <div class="form-group">
+          <label class="form-label">Thumbnail Film <span>*</span></label>
+          <div class="drop-zone" id="thumbDropZone">
+            <input type="file" accept="image/*" id="thumbFile" onchange="handleThumbFile(event)">
+            <div class="drop-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            </div>
+            <div class="drop-title">Upload Gambar Poster</div>
+            <div class="drop-sub">Gambar poster / thumbnail film (rasio 2:3 disarankan)</div>
+            <div class="drop-formats">
+              <span class="format-tag">JPG</span>
+              <span class="format-tag">PNG</span>
+              <span class="format-tag">WEBP</span>
+            </div>
+          </div>
+          <img class="thumb-preview" id="thumbPreview" alt="Thumbnail Preview">
+          <div class="file-preview" id="thumbFilePreview">
+            <div class="file-icon">IMG</div>
+            <div class="file-info">
+              <div class="file-name" id="thumbFileName">thumbnail.jpg</div>
+              <div class="file-size" id="thumbFileSize">0 KB</div>
+            </div>
+            <button class="file-remove" onclick="removeThumb()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Visibilitas</label>
+          <select class="form-select" id="filmVisibility">
+            <option>Publik - Semua dapat menonton</option>
+            <option>Terbatas - Hanya dengan link</option>
+            <option>Privat - Hanya saya</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- STEP 4: SUCCESS -->
+      <div class="section-step" id="formStep4">
+        <div class="upload-success" id="uploadSuccess">
+          <div class="success-icon">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="success-title">Film Berhasil Diupload!</div>
+          <div class="success-sub" id="successFilmName">Filmmu telah berhasil ditambahkan ke library StreamFlix.</div>
+          <button class="btn-play" style="margin: 0 auto;" onclick="closeUpload()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+            Kembali ke Beranda
+          </button>
+        </div>
+
+        <div class="upload-progress" id="uploadProgressWrap">
+          <div class="progress-header">
+            <span>Mengupload Film...</span>
+            <span id="progressPct">0%</span>
+          </div>
+          <div class="progress-bar-track">
+            <div class="progress-bar-fill" id="progressFill"></div>
+          </div>
+          <div class="progress-status" id="progressStatus">Mempersiapkan file...</div>
+        </div>
+      </div>
+
+    </div><!-- modal-body -->
+
+    <div class="modal-footer" id="modalFooter">
+      <button class="btn-cancel" id="btnBack" onclick="prevStep()" style="display:none;">Kembali</button>
+      <button class="btn-cancel" onclick="closeUpload()">Batal</button>
+      <button class="btn-next" id="btnNext" onclick="nextStep()">
+        Selanjutnya
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- DETAIL MODAL -->
+<div class="modal-overlay" id="detailOverlay" onclick="closeOnOverlay(event,'detailOverlay')">
+  <div class="detail-modal">
+    <div class="detail-banner" id="detailBanner">
+      <img class="detail-banner-img" id="detailBannerImg" alt="" style="display:none;">
+      <div class="detail-banner-overlay"></div>
+      <div class="detail-banner-placeholder" id="detailBannerPlaceholder">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+        <span style="font-size:0.85rem;">Tidak ada thumbnail</span>
+      </div>
+      <button class="modal-close" onclick="closeDetail()" style="position:absolute;top:16px;right:16px;z-index:10;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div class="detail-content">
+      <div class="detail-tags" id="detailTags"></div>
+      <div class="detail-title" id="detailTitle">Judul Film</div>
+      <div class="detail-meta" id="detailMeta"></div>
+      <div class="detail-desc" id="detailDesc">Deskripsi film.</div>
+      <div class="detail-actions">
+        <button class="btn-play" id="detailPlayBtn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Putar Film
+        </button>
+        <button class="btn-info" onclick="closeDetail()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          Tutup
+        </button>
+      </div>
+      <div class="video-player-wrap" id="videoPlayerWrap" style="display:none;">
+        <video controls id="detailVideo">
+          Browser Anda tidak mendukung video.
+        </video>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+// ===========================
+// DATA
+// ===========================
+
+const SAMPLE_FILMS = [
+];
+
+let uploadedFilms = [];
+let currentStep = 1;
+let totalSteps = 3;
+let selectedGenre = 'all';
+let tags = [];
+
+// ===========================
+// INIT
+// ===========================
+
+window.addEventListener('load', () => {
+  renderCarousel('trendingRow', SAMPLE_FILMS.slice(0,8));
+  renderCarousel('continueRow', SAMPLE_FILMS.filter(f => f.progress > 0), true);
+  renderCarousel('popularRow', SAMPLE_FILMS.slice(4,12));
+  updateStats();
+  animateStats();
+});
+
+window.addEventListener('scroll', () => {
+  const nav = document.getElementById('navbar');
+  nav.classList.toggle('scrolled', window.scrollY > 50);
+});
+
+// ===========================
+// RENDER
+// ===========================
+
+function renderCarousel(rowId, films, showProgress = false) {
+  const row = document.getElementById(rowId);
+  if (!row) return;
+  row.innerHTML = '';
+
+  if (films.length === 0) {
+    row.innerHTML = `<div class="empty-state" style="width:100%;">
+      <div class="empty-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
+      <h3>Belum Ada Film</h3>
+      <p>Upload film pertamamu sekarang!</p>
+    </div>`;
+    return;
+  }
+
+  films.forEach((film, i) => {
+    const card = document.createElement('div');
+    card.className = 'film-card';
+    card.style.animationDelay = (i * 0.05) + 's';
+
+    const gradients = [
+      'linear-gradient(135deg,#1a0000,#2d0000)',
+      'linear-gradient(135deg,#001a00,#002d00)',
+      'linear-gradient(135deg,#00001a,#00002d)',
+      'linear-gradient(135deg,#1a1a00,#2d2d00)',
+      'linear-gradient(135deg,#1a000d,#2d0019)',
+      'linear-gradient(135deg,#000d1a,#00192d)',
+    ];
+    const bg = gradients[i % gradients.length];
+
+    const thumbContent = film.thumb
+      ? `<img class="card-thumb" src="${film.thumb}" alt="${film.title}" loading="lazy">`
+      : `<div class="card-thumb-placeholder" style="background:${bg};">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#444" stroke-width="1.5"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+          <span style="font-size:0.72rem;color:#444;">${film.genre}</span>
+        </div>`;
+
+    const progressHTML = showProgress && film.progress > 0
+      ? `<div class="card-progress"><div class="card-progress-fill" style="width:${film.progress}%"></div></div>`
+      : '';
+
+    card.innerHTML = `
+      ${film.isUploaded ? '<div class="card-badge-uploaded">Upload</div>' : '<div class="card-badge-new">NEW</div>'}
+      ${thumbContent}
+      <div class="card-overlay">
+        <div class="card-play-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        </div>
+        <div class="card-title">${film.title}</div>
+        <div class="card-meta">${film.year} &bull; ${film.genre}</div>
+      </div>
+      <div class="card-info">
+        <div class="card-info-title">${film.title}</div>
+        <div class="card-info-genre">${film.genre} &bull; ${film.year}</div>
+        ${progressHTML}
+      </div>`;
+
+    card.addEventListener('click', () => openDetail(film));
+    row.appendChild(card);
+  });
+}
+
+function updateStats() {
+  const allFilms = [...SAMPLE_FILMS, ...uploadedFilms];
+  const genreSet = new Set(allFilms.map(f => f.genre));
+  animateNum('statFilms', allFilms.length);
+  animateNum('statUploaded', uploadedFilms.length);
+  animateNum('statGenres', genreSet.size);
+}
+
+function animateNum(id, target) {
+  const el = document.getElementById(id);
+  let curr = 0;
+  const step = Math.ceil(target / 30);
+  const interval = setInterval(() => {
+    curr = Math.min(curr + step, target);
+    el.textContent = curr;
+    if (curr >= target) clearInterval(interval);
+  }, 40);
+}
+
+function animateStats() {
+  animateNum('statFilms', SAMPLE_FILMS.length);
+  animateNum('statUploaded', 0);
+  animateNum('statGenres', new Set(SAMPLE_FILMS.map(f=>f.genre)).size);
+}
+
+// ===========================
+// FILTER
+// ===========================
+
+function filterGenre(el, genre) {
+  document.querySelectorAll('.genre-tag').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  selectedGenre = genre;
+
+  const filtered = genre === 'all'
+    ? SAMPLE_FILMS
+    : SAMPLE_FILMS.filter(f => f.genre === genre);
+
+  renderCarousel('trendingRow', filtered.slice(0, 8));
+  renderCarousel('popularRow', filtered.slice(0, 8).reverse());
+
+  const continueFiltered = filtered.filter(f => f.progress > 0);
+  renderCarousel('continueRow', continueFiltered, true);
+}
+
+// ===========================
+// UPLOAD FLOW
+// ===========================
+
+function openUpload() {
+  currentStep = 1;
+  tags = [];
+  document.getElementById('uploadOverlay').classList.add('active');
+  renderStep();
+  document.body.style.overflow = 'hidden';
+}
+
+function closeUpload() {
+  document.getElementById('uploadOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+  setTimeout(resetUploadForm, 400);
+}
+
+function resetUploadForm() {
+  currentStep = 1;
+  tags = [];
+  ['filmTitle','filmDesc','filmDirector','filmDuration'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.getElementById('filmGenre').value = '';
+  document.getElementById('filmRating').value = 'Semua Usia';
+  document.getElementById('filmYear').value = '2024';
+  document.getElementById('titleCount').textContent = '0';
+  document.getElementById('descCount').textContent = '0';
+  removeFile('videoFile','videoPreview','videoDropZone');
+  removeThumb();
+  document.getElementById('tagsContainer').innerHTML = `<input type="text" class="tag-input" id="tagInput" placeholder="Ketik tag lalu tekan Enter..." onkeydown="handleTag(event)">`;
+  renderStep();
+}
+
+function renderStep() {
+  for (let i = 1; i <= 4; i++) {
+    const section = document.getElementById('formStep' + i);
+    if (section) section.classList.toggle('active', i === currentStep);
+
+    const stepDot = document.getElementById('stepDot' + i);
+    const stepCircle = document.getElementById('stepCircle' + i);
+    if (!stepDot || !stepCircle) continue;
+
+    stepDot.classList.remove('active','done');
+    if (i < currentStep) {
+      stepDot.classList.add('done');
+      stepCircle.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>`;
+    } else if (i === currentStep) {
+      stepDot.classList.add('active');
+      stepCircle.textContent = i;
+    } else {
+      stepCircle.textContent = i;
+    }
+  }
+
+  const btnBack = document.getElementById('btnBack');
+  const btnNext = document.getElementById('btnNext');
+  const footer = document.getElementById('modalFooter');
+
+  btnBack.style.display = currentStep > 1 && currentStep <= 3 ? 'flex' : 'none';
+
+  if (currentStep === 4) {
+    btnNext.style.display = 'none';
+    btnBack.style.display = 'none';
+    footer.style.display = 'none';
+    startUploadProgress();
+  } else {
+    footer.style.display = 'flex';
+    btnNext.style.display = 'flex';
+    btnNext.innerHTML = currentStep === 3
+      ? `Upload Sekarang <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>`
+      : `Selanjutnya <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>`;
+  }
+}
+
+function nextStep() {
+  if (!validateStep()) return;
+  if (currentStep < 4) {
+    currentStep++;
+    renderStep();
+  }
+}
+
+function prevStep() {
+  if (currentStep > 1) {
+    currentStep--;
+    renderStep();
+  }
+}
+
+function validateStep() {
+  if (currentStep === 1) {
+    const title = document.getElementById('filmTitle').value.trim();
+    const genre = document.getElementById('filmGenre').value;
+    const desc = document.getElementById('filmDesc').value.trim();
+    const year = document.getElementById('filmYear').value;
+    if (!title) { showToast('Judul film harus diisi!', 'error'); return false; }
+    if (!genre) { showToast('Pilih genre film!', 'error'); return false; }
+    if (!desc) { showToast('Deskripsi film harus diisi!', 'error'); return false; }
+    if (!year) { showToast('Tahun rilis harus diisi!', 'error'); return false; }
+  }
+  if (currentStep === 2) {
+    const vf = document.getElementById('videoFile');
+    if (!vf || !vf.files || !vf.files[0]) {
+      showToast('File video harus diupload!', 'error');
+      return false;
+    }
+  }
+  return true;
+}
+
+function startUploadProgress() {
+  const progressWrap = document.getElementById('uploadProgressWrap');
+  const successEl = document.getElementById('uploadSuccess');
+  progressWrap.classList.add('show');
+  successEl.classList.remove('show');
+
+  const statuses = [
+    'Mempersiapkan file...',
+    'Mengompresi video...',
+    'Mengunggah ke server...',
+    'Memproses metadata...',
+    'Hampir selesai...',
+    'Finalisasi...',
+  ];
+
+  let pct = 0;
+  let statusIdx = 0;
+  const fill = document.getElementById('progressFill');
+  const pctEl = document.getElementById('progressPct');
+  const statusEl = document.getElementById('progressStatus');
+
+  const interval = setInterval(() => {
+    pct += Math.random() * 8 + 3;
+    if (pct >= 100) pct = 100;
+    fill.style.width = pct + '%';
+    pctEl.textContent = Math.floor(pct) + '%';
+    statusIdx = Math.min(Math.floor(pct / 20), statuses.length - 1);
+    statusEl.textContent = statuses[statusIdx];
+
+    if (pct >= 100) {
+      clearInterval(interval);
+      setTimeout(() => completeUpload(), 600);
+    }
+  }, 200);
+}
+
+function completeUpload() {
+  const title = document.getElementById('filmTitle').value.trim();
+  const genre = document.getElementById('filmGenre').value;
+  const year = document.getElementById('filmYear').value;
+  const desc = document.getElementById('filmDesc').value.trim();
+  const director = document.getElementById('filmDirector').value.trim();
+  const rating = document.getElementById('filmRating').value;
+  const duration = document.getElementById('filmDuration').value || 0;
+
+  const thumbFile = document.getElementById('thumbFile');
+  let thumbUrl = null;
+  if (thumbFile && thumbFile.files && thumbFile.files[0]) {
+    thumbUrl = URL.createObjectURL(thumbFile.files[0]);
+  }
+
+  const videoFile = document.getElementById('videoFile');
+  let videoUrl = null;
+  if (videoFile && videoFile.files && videoFile.files[0]) {
+    videoUrl = URL.createObjectURL(videoFile.files[0]);
+  }
+
+  const newFilm = {
+    id: Date.now(),
+    title, genre, year, rating,
+    duration: parseInt(duration),
+    director, desc, thumb: thumbUrl,
+    videoUrl, isUploaded: true, progress: 0,
+    tags: [...tags]
+  };
+
+  uploadedFilms.push(newFilm);
+  document.getElementById('uploadProgressWrap').classList.remove('show');
+  document.getElementById('uploadSuccess').classList.add('show');
+  document.getElementById('successFilmName').textContent = `"${title}" berhasil ditambahkan ke library StreamFlix!`;
+
+  document.getElementById('uploadedSection').style.display = 'block';
+  renderCarousel('uploadedRow', uploadedFilms);
+  updateStats();
+  showToast('"' + title + '" berhasil diupload!', 'success');
+}
+
+function clearUploaded() {
+  if (!confirm('Hapus semua film yang diupload?')) return;
+  uploadedFilms = [];
+  document.getElementById('uploadedSection').style.display = 'none';
+  updateStats();
+  showToast('Semua film upload telah dihapus', 'info');
+}
+
+// ===========================
+// FILE HANDLERS
+// ===========================
+
+function handleVideoFile(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  document.getElementById('videoFileName').textContent = file.name;
+  document.getElementById('videoFileSize').textContent = formatSize(file.size);
+  document.getElementById('videoPreview').classList.add('show');
+  document.getElementById('videoDropZone').style.opacity = '0.5';
+}
+
+function handleThumbFile(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const img = document.getElementById('thumbPreview');
+    img.src = e.target.result;
+    img.classList.add('show');
+  };
+  reader.readAsDataURL(file);
+  document.getElementById('thumbFileName').textContent = file.name;
+  document.getElementById('thumbFileSize').textContent = formatSize(file.size);
+  document.getElementById('thumbFilePreview').classList.add('show');
+  document.getElementById('thumbDropZone').style.opacity = '0.5';
+}
+
+function removeFile(inputId, previewId, zoneId) {
+  const input = document.getElementById(inputId);
+  if (input) input.value = '';
+  const preview = document.getElementById(previewId);
+  if (preview) preview.classList.remove('show');
+  const zone = document.getElementById(zoneId);
+  if (zone) zone.style.opacity = '1';
+}
+
+function removeThumb() {
+  document.getElementById('thumbFile').value = '';
+  document.getElementById('thumbPreview').classList.remove('show');
+  document.getElementById('thumbFilePreview').classList.remove('show');
+  document.getElementById('thumbDropZone').style.opacity = '1';
+}
+
+function handleDrag(event, zoneId) {
+  event.preventDefault();
+  document.getElementById(zoneId).classList.add('drag-over');
+}
+
+function handleDragLeave(zoneId) {
+  document.getElementById(zoneId).classList.remove('drag-over');
+}
+
+function formatSize(bytes) {
+  if (bytes >= 1073741824) return (bytes/1073741824).toFixed(1) + ' GB';
+  if (bytes >= 1048576) return (bytes/1048576).toFixed(1) + ' MB';
+  return (bytes/1024).toFixed(1) + ' KB';
+}
+
+// ===========================
+// TAGS
+// ===========================
+
+function handleTag(event) {
+  if (event.key === 'Enter' || event.key === ',') {
+    event.preventDefault();
+    const val = event.target.value.trim().replace(/,/g,'');
+    if (val && tags.length < 8 && !tags.includes(val)) {
+      tags.push(val);
+      renderTags();
+    }
+    event.target.value = '';
+  } else if (event.key === 'Backspace' && event.target.value === '' && tags.length > 0) {
+    tags.pop();
+    renderTags();
+  }
+}
+
+function renderTags() {
+  const container = document.getElementById('tagsContainer');
+  const existingInput = document.getElementById('tagInput');
+  container.innerHTML = '';
+  tags.forEach((tag, i) => {
+    const el = document.createElement('div');
+    el.className = 'tag-item';
+    el.innerHTML = `${tag}<button class="tag-remove" onclick="removeTag(${i})">x</button>`;
+    container.appendChild(el);
+  });
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.className = 'tag-input';
+  input.id = 'tagInput';
+  input.placeholder = tags.length < 8 ? 'Ketik tag lalu tekan Enter...' : 'Max 8 tag';
+  input.disabled = tags.length >= 8;
+  input.setAttribute('onkeydown', 'handleTag(event)');
+  container.appendChild(input);
+}
+
+function removeTag(idx) {
+  tags.splice(idx, 1);
+  renderTags();
+}
+
+// ===========================
+// CHAR COUNT
+// ===========================
+
+function countChar(inputId, countId, max) {
+  const len = document.getElementById(inputId).value.length;
+  document.getElementById(countId).textContent = len;
+}
+
+// ===========================
+// SCROLL CAROUSEL
+// ===========================
+
+function scroll(rowId, dir) {
+  const row = document.getElementById(rowId);
+  if (row) row.scrollBy({ left: dir * 700, behavior: 'smooth' });
+}
+
+// ===========================
+// DETAIL MODAL
+// ===========================
+
+function openDetail(film) {
+  const overlay = document.getElementById('detailOverlay');
+
+  document.getElementById('detailTitle').textContent = film.title;
+  document.getElementById('detailDesc').textContent = film.desc || 'Tidak ada deskripsi.';
+
+  const meta = document.getElementById('detailMeta');
+  meta.innerHTML = `
+    <span class="detail-rating">${film.rating}</span>
+    <span>${film.year}</span>
+    <span>${film.duration ? film.duration + ' menit' : '-'}</span>
+    ${film.director ? '<span>Sutradara: ' + film.director + '</span>' : ''}
+  `;
+
+  const tagsEl = document.getElementById('detailTags');
+  tagsEl.innerHTML = `<span class="detail-tag">${film.genre}</span>`;
+  if (film.tags && film.tags.length > 0) {
+    film.tags.slice(0,3).forEach(t => {
+      const s = document.createElement('span');
+      s.className = 'detail-tag';
+      s.textContent = '#' + t;
+      tagsEl.appendChild(s);
+    });
+  }
+
+  const bannerImg = document.getElementById('detailBannerImg');
+  const placeholder = document.getElementById('detailBannerPlaceholder');
+  if (film.thumb) {
+    bannerImg.src = film.thumb;
+    bannerImg.style.display = 'block';
+    placeholder.style.display = 'none';
+  } else {
+    bannerImg.style.display = 'none';
+    placeholder.style.display = 'flex';
+  }
+
+  const videoWrap = document.getElementById('videoPlayerWrap');
+  const videoEl = document.getElementById('detailVideo');
+  const playBtn = document.getElementById('detailPlayBtn');
+
+  if (film.videoUrl) {
+    videoEl.src = film.videoUrl;
+    videoWrap.style.display = 'block';
+    playBtn.onclick = () => {
+      videoEl.play();
+      videoEl.scrollIntoView({ behavior: 'smooth' });
+    };
+  } else {
+    videoWrap.style.display = 'none';
+    videoEl.src = '';
+    playBtn.onclick = () => showToast('Tonton film lengkap di bioskop terdekat!', 'info');
+  }
+
+  overlay.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeDetail() {
+  document.getElementById('detailOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+  const videoEl = document.getElementById('detailVideo');
+  if (videoEl) { videoEl.pause(); videoEl.src = ''; }
+}
+
+// ===========================
+// OVERLAY CLICK
+// ===========================
+
+function closeOnOverlay(event, overlayId) {
+  if (event.target.id === overlayId) {
+    if (overlayId === 'uploadOverlay') closeUpload();
+    else closeDetail();
+  }
+}
+
+// ===========================
+// TOAST
+// ===========================
+
+function showToast(message, type = 'info') {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = 'toast ' + type;
+
+  const iconMap = {
+    success: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00c853" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>`,
+    error: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E50914" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
+    info: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2196f3" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
+  };
+
+  toast.innerHTML = `${iconMap[type] || iconMap.info} <span>${message}</span>`;
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateX(60px)';
+    toast.style.transition = 'all 0.3s';
+    setTimeout(() => toast.remove(), 350);
+  }, 3500);
+}
+</script>
+</body>
+</html>
